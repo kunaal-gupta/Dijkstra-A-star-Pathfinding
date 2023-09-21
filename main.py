@@ -50,7 +50,6 @@ def main():
 
     def Dijkstra(start, goal, T):
         mapFunc = Map(gridded_map)
-        # statFunc = State(start)
 
         OpenArr = []
         ClosedArr = dict()
@@ -63,7 +62,7 @@ def main():
 
             for n_ in mapFunc.successors(n):
                 if State(n_).state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, n_)
+                    heapq.heappush(OpenArr, [n_])
                     ClosedArr[State(n_).state_hash()] = n_
 
                 if State(n_).state_hash() in ClosedArr and 0:
