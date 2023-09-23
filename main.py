@@ -48,35 +48,54 @@ def main():
 
     # print('Start ', start_states)
 
-    def Dijkstra(start, goal, T):
-        mapFunc = Map(gridded_map)
+    def Dijkstra(start, goal):
+        # mapFunc = Map(gridded_map)
 
-        OpenArr = []
+        OpenArr = [(0, start.get_x(), start.get_y())]
         ClosedArr = dict()
-        ClosedArr[State(start).state_hash()] = start
+        ClosedArr[State(start.get_x(), start.get_y()).state_hash()] = start, 0
+        # print('goal', goal)
 
-        while list(OpenArr) != 0:
+        while (OpenArr) != 0:
             n = heapq.heappop(OpenArr)
-            if State(goal).__eq__(n):
-                return None
 
-            for n_ in mapFunc.successors(n):
-                if State(n_).state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [n_])
-                    ClosedArr[State(n_).state_hash()] = n_
+            nx = n[1]
+            ny = n[2]
 
-                if State(n_).state_hash() in ClosedArr and 0:
-                    # update cost in both
-                    pass
+            if State(goal.get_x(), goal.get_y()) == State(nx, ny):
+                return n[0], len(OpenArr)
+
+            for n_ in gridded_map.successors(State(nx, ny)):
+                n_x = n_.get_x()
+                n_y = n_.get_y()
+
+
+                if State(n_x, n_y).state_hash() not in ClosedArr:
+                    heapq.heappush(OpenArr, (State(nx, ny).get_g() + gridded_map.cost(n_x, n_y), n_.get_x(), n_.get_y()))
+
+                    ClosedArr[State(n_x, n_y).state_hash()] = n_, State(n_x, n_y).get_g() + gridded_map.cost(n_x, n_y)
+                    State(n_x, n_y).set_g(State(n_x, n_y).get_g() + gridded_map.cost(n_x, n_y))
+                    # print(State(n_x, n_y).get_g())
+
+
+                if State(n_x, n_y).state_hash() in ClosedArr and (State(n_x, n_y).get_g() + gridded_map.cost(n_x, n_y)) < ClosedArr[State(n_x, n_y).state_hash()][1]:
+                    # update cost in both                               #TODO
+
+                    ClosedArr[State(n_x, n_y).state_hash()] = (n_, State(n).get_g() + gridded_map.cost(n_))
+
+                    index = OpenArr.index(State(nx, ny).get_g() + gridded_map.cost(n_x, n_y), n_)
+                    OpenArr[index] = (State(nx, ny).get_g() + gridded_map.cost(n_x, n_y), n_.get_x(), n_.get_y())
+
             heapq.heapify(OpenArr)
         return -1
+
 
     for i in range(0, len(start_states)):
         start = start_states[i]
         goal = goal_states[i]
 
         time_start = time.time()
-        cost, expanded_diskstra = None, None  # replace None, None with the call to your Dijkstra's implementation
+        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's implementation
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
         time_dijkstra.append(time_end - time_start)

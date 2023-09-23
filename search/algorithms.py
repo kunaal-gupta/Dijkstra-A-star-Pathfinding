@@ -89,4 +89,3 @@ class State:
         Sets the cost of the state; the cost is determined by the search algorithm 
         """
         self._cost = cost
-print(State(1, 2).state_hash())
