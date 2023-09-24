@@ -87,7 +87,8 @@ def main():
         goal = goal_states[i]
 
         time_start = time.time()
-        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's implementation
+        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's
+        # implementation
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
         time_dijkstra.append(time_end - time_start)

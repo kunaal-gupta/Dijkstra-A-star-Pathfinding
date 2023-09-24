@@ -48,49 +48,55 @@ def test():
 
     def Dijkstra(start, goal):
         OpenArr = [[0, start]]
-        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): start}
+        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, float('inf')]}
 
-        while len(OpenArr) != 0:
+        while OpenArr:
             n_cost, n = heapq.heappop(OpenArr)[:]
+
             parent_instance = State(n.get_x(), n.get_y())
-            # print(n_cost, type(n_cost))
             parent_instance.set_g(n_cost)
 
             if n.get_x() == goal.get_x() and n.get_y() == goal.get_y():
-                # print(ClosedArr)
-                return heapq.heappop(OpenArr)[0], len(ClosedArr)
+                return ClosedArr[goal.state_hash()][1], len(ClosedArr) + 1
 
             for n_child in gridded_map.successors(n):
+
                 n_x = n_child.get_x()
                 n_y = n_child.get_y()
+                n_g = n_child.get_g()
                 child_instance = State(n_x, n_y)
+                child_instance.set_g(n_g)
 
                 gOfN = parent_instance.get_g()
-                costN_Nchild = gridded_map.cost(x=n_x, y=n_y)
+                cost_N_2_nChild = gridded_map.cost(x=n_x, y=n_y)
 
                 if child_instance.state_hash() not in ClosedArr:
+                    heapq.heappush(OpenArr, [n_g, n_child])  # OpenList
+                    ClosedArr[child_instance.state_hash()] = [n_child, n_g]  # ClosedList
+                    # a = child_instance.get_g()
+                    # child_instance.set_g(gOfN + cost_N_2_nChild)
+                    # # b = child_instance.get_g()
+                    # print(a,b)
+                if child_instance.state_hash() in ClosedArr and gOfN + cost_N_2_nChild < \
+                        ClosedArr[child_instance.state_hash()][1]:
 
-                    heapq.heappush(OpenArr, [gOfN + costN_Nchild, n_child])                   # OpenList
-                    ClosedArr[child_instance.state_hash()] = n_child                                  # ClosedList
+                    ClosedArr[child_instance.state_hash()][1] = gOfN + cost_N_2_nChild
+                    heapq.heappush(OpenArr, [gOfN + cost_N_2_nChild, n_child])
 
-                    child_instance.set_g(gOfN + costN_Nchild)
+        heapq.heapify(OpenArr)
 
-                if child_instance.state_hash() in ClosedArr and gOfN + costN_Nchild < child_instance.get_g():
-
-                    print('hi')
-
-                heapq.heapify(OpenArr)
-        return -1
-
-
+        return -1, -1
 
     for i in range(0, len(start_states)):
         start = start_states[i]
         goal = goal_states[i]
-        # print('print ', Dijkstra(start, goal))
+        result = Dijkstra(start, goal)
+        # print('re', result)
 
         time_start = time.time()
-        cost, expanded_diskstra =  Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's implementation
+        cost, expanded_diskstra = result
+        # replace None, None with the call to your Dijkstra's implementation
+
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
         time_dijkstra.append(time_end - time_start)
@@ -103,16 +109,16 @@ def test():
             print("Solution cost expected: ", solution_costs[i])
             print()
 
-            # start = start_states[i]
-        # goal = goal_states[i]
-        #
-        # time_start = time.time()
-        # cost, expanded_astar = None, None # replace None, None with the call to your A* implementation
-        # time_end = time.time()
-        #
-        # nodes_expanded_astar.append(expanded_astar)
-        # time_astar.append(time_end - time_start)
-        #
+        start = start_states[i]
+        goal = goal_states[i]
+
+        time_start = time.time()
+        cost, expanded_astar = None, None  # replace None, None with the call to your A* implementation
+        time_end = time.time()
+
+        nodes_expanded_astar.append(expanded_astar)
+        time_astar.append(time_end - time_start)
+
         # if cost != solution_costs[i]:
         #     print("There is a mismatch in the solution cost found by A* and what was expected for the problem:")
         #     print("Start state: ", start)
@@ -123,10 +129,15 @@ def test():
 
     if plots:
         from search.plot_results import PlotResults
+        import matplotlib.pyplot as plt
+        import matplotlib
+        matplotlib.use("TkAgg")
+
         plotter = PlotResults()
         plotter.plot_results(nodes_expanded_astar, nodes_expanded_dijkstra, "Nodes Expanded (A*)",
                              "Nodes Expanded (Dijkstra)", "nodes_expanded")
         plotter.plot_results(time_astar, time_dijkstra, "Running Time (A*)", "Running Time (Dijkstra)", "running_time")
+        plt.show()
 
 
 if __name__ == "__main__":
