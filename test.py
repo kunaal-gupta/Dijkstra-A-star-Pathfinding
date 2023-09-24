@@ -6,10 +6,10 @@ import sys
 import heapq
 
 
-def main():
+def test():
     """
-    Function for testing your A* and Dijkstra's implementation. 
-    Run it with a -help option to see the options available. 
+    Function for testing your A* and Dijkstra's implementation.
+    Run it with a -help option to see the options available.
     """
     optlist, _ = getopt.getopt(sys.argv[1:], 'h:m:r:', ['testinstances', 'plots', 'help'])
 
@@ -46,8 +46,6 @@ def main():
         solution_costs.append(float(list_instance[4]))
     file.close()
 
-    # print('Start ', start_states)
-
     def Dijkstra(start, goal):
         OpenArr = [[0, start]]
         ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): start}
@@ -71,23 +69,28 @@ def main():
                 costN_Nchild = gridded_map.cost(x=n_x, y=n_y)
 
                 if child_instance.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [gOfN + costN_Nchild, n_child])  # OpenList
-                    ClosedArr[child_instance.state_hash()] = n_child  # ClosedList
+
+                    heapq.heappush(OpenArr, [gOfN + costN_Nchild, n_child])                   # OpenList
+                    ClosedArr[child_instance.state_hash()] = n_child                                  # ClosedList
 
                     child_instance.set_g(gOfN + costN_Nchild)
 
                 if child_instance.state_hash() in ClosedArr and gOfN + costN_Nchild < child_instance.get_g():
+
                     print('hi')
 
                 heapq.heapify(OpenArr)
         return -1
 
+
+
     for i in range(0, len(start_states)):
         start = start_states[i]
         goal = goal_states[i]
+        # print('print ', Dijkstra(start, goal))
 
         time_start = time.time()
-        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's implementation
+        cost, expanded_diskstra =  Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's implementation
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
         time_dijkstra.append(time_end - time_start)
@@ -127,4 +130,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()

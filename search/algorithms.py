@@ -45,6 +45,7 @@ class State:
         hash function for the problem (i.e., no two states will have the same hash value). This function
         is used to implement the CLOSED list of the algorithms. 
         """
+
         return self._y * State.map_width + self._x
     
     def __eq__(self, other):

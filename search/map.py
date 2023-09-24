@@ -135,3 +135,4 @@ class Map:
                     s.set_g(state.get_g() + self.cost(i, j))
                     children.append(s)
         return children
+
