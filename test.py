@@ -48,16 +48,16 @@ def test():
 
     def Dijkstra(start, goal):
         OpenArr = [[0, start]]
-        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, float('inf')]}
+        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, 0]}
 
         while OpenArr:
-            n_cost, n = heapq.heappop(OpenArr)[:]
+            N_cost, n = heapq.heappop(OpenArr)
 
             parent_instance = State(n.get_x(), n.get_y())
-            parent_instance.set_g(n_cost)
+            parent_instance.set_g(N_cost)
 
             if n.get_x() == goal.get_x() and n.get_y() == goal.get_y():
-                return ClosedArr[goal.state_hash()][1], len(ClosedArr) + 1
+                return ClosedArr[goal.state_hash()][1], len(ClosedArr) + 1, ClosedArr
 
             for n_child in gridded_map.successors(n):
 
@@ -68,34 +68,30 @@ def test():
                 child_instance.set_g(n_g)
 
                 gOfN = parent_instance.get_g()
-                cost_N_2_nChild = gridded_map.cost(x=n_x, y=n_y)
+                cost_N_2_nChild = gridded_map.cost(n_x, n_y)
+                # print(gOfN - child_instance.get_g() == -cost_N_2_nChild, gOfN, cost_N_2_nChild,  child_instance.get_g())
+                if cost_N_2_nChild == 1:
+                    print(True)
+
 
                 if child_instance.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [n_g, n_child])  # OpenList
-                    ClosedArr[child_instance.state_hash()] = [n_child, n_g]  # ClosedList
-                    # a = child_instance.get_g()
-                    # child_instance.set_g(gOfN + cost_N_2_nChild)
-                    # # b = child_instance.get_g()
-                    # print(a,b)
-                if child_instance.state_hash() in ClosedArr and gOfN + cost_N_2_nChild < \
-                        ClosedArr[child_instance.state_hash()][1]:
-
+                    heapq.heappush(OpenArr, [n_g, n_child])                   # OpenList
+                    ClosedArr[child_instance.state_hash()] = [n_child, n_g]         # ClosedList
+        #
+                if child_instance.state_hash() in ClosedArr and gOfN + cost_N_2_nChild < n_g:
                     ClosedArr[child_instance.state_hash()][1] = gOfN + cost_N_2_nChild
                     heapq.heappush(OpenArr, [gOfN + cost_N_2_nChild, n_child])
+                    child_instance.set_g(gOfN + cost_N_2_nChild)
 
         heapq.heapify(OpenArr)
 
-        return -1, -1
+        return -1, -1, -1
 
     for i in range(0, len(start_states)):
         start = start_states[i]
         goal = goal_states[i]
-        result = Dijkstra(start, goal)
-        # print('re', result)
-
         time_start = time.time()
-        cost, expanded_diskstra = result
-        # replace None, None with the call to your Dijkstra's implementation
+        cost, expanded_diskstra, Arr = Dijkstra(start, goal)
 
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
@@ -107,7 +103,15 @@ def test():
             print("Goal state: ", goal)
             print("Solution cost encountered: ", cost)
             print("Solution cost expected: ", solution_costs[i])
+            print(Arr)
             print()
+        else:
+            print('success')
+            # print("Start state: ", start)
+            # print("Goal state: ", goal)
+            # print("Solution cost encountered: ", cost)
+            # print("Solution cost expected: ", solution_costs[i])
+            # print()
 
         start = start_states[i]
         goal = goal_states[i]

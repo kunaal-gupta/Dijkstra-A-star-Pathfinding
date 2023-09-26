@@ -50,37 +50,43 @@ def main():
 
     def Dijkstra(start, goal):
         OpenArr = [[0, start]]
-        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): start}
+        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, 0]}
 
-        while len(OpenArr) != 0:
-            n_cost, n = heapq.heappop(OpenArr)[:]
+        while OpenArr:
+            N_cost, n = heapq.heappop(OpenArr)
+
             parent_instance = State(n.get_x(), n.get_y())
-            # print(n_cost, type(n_cost))
-            parent_instance.set_g(n_cost)
+            parent_instance.set_g(N_cost)
 
             if n.get_x() == goal.get_x() and n.get_y() == goal.get_y():
-                # print(ClosedArr)
-                return heapq.heappop(OpenArr)[0], len(ClosedArr)
+                return ClosedArr[goal.state_hash()][1], len(ClosedArr) + 1
 
             for n_child in gridded_map.successors(n):
+
                 n_x = n_child.get_x()
                 n_y = n_child.get_y()
+                n_g = n_child.get_g()
                 child_instance = State(n_x, n_y)
+                child_instance.set_g(n_g)
 
                 gOfN = parent_instance.get_g()
-                costN_Nchild = gridded_map.cost(x=n_x, y=n_y)
+                cost_N_2_nChild = gridded_map.cost(n_x, n_y)
+                # print(gOfN - child_instance.get_g() == -cost_N_2_nChild, gOfN, cost_N_2_nChild,  child_instance.get_g())
+                if cost_N_2_nChild == 1:
+                    print(True)
 
                 if child_instance.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [gOfN + costN_Nchild, n_child])  # OpenList
-                    ClosedArr[child_instance.state_hash()] = n_child  # ClosedList
+                    heapq.heappush(OpenArr, [n_g, n_child])  # OpenList
+                    ClosedArr[child_instance.state_hash()] = [n_child, n_g]  # ClosedList
+                #
+                if child_instance.state_hash() in ClosedArr and gOfN + cost_N_2_nChild < n_g:
+                    ClosedArr[child_instance.state_hash()][1] = gOfN + cost_N_2_nChild
+                    heapq.heappush(OpenArr, [gOfN + cost_N_2_nChild, n_child])
+                    child_instance.set_g(gOfN + cost_N_2_nChild)
 
-                    child_instance.set_g(gOfN + costN_Nchild)
+        heapq.heapify(OpenArr)
 
-                if child_instance.state_hash() in ClosedArr and gOfN + costN_Nchild < child_instance.get_g():
-                    print('hi')
-
-                heapq.heapify(OpenArr)
-        return -1
+        return -1, -1
 
     for i in range(0, len(start_states)):
         start = start_states[i]
