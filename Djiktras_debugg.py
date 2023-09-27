@@ -46,11 +46,45 @@ def test():
         solution_costs.append(float(list_instance[4]))
     file.close()
 
+    def Dijkstra(start, goal, transitionFunc):
+        OpenArr = [start]  # Open Array
+
+        ClosedArr = dict()  # Closed Array
+        ClosedArr[State(goal.get_x(), goal.get_y()).state_hash()] = goal
+
+        while OpenArr:
+            node = heapq.heappop(OpenArr)
+
+            # If the current state is the goal state, return the solution cost and nodes expanded
+            if node == goal:
+                return ClosedArr[node.state_hash()].get_g(), len(ClosedArr)
+
+            # Mark the current state as explored
+            ClosedArr[node.state_hash()] = node
+
+            for childNode in transitionFunc.successors(node):
+                child_x, child_y, child_hash = childNode.get_x(), childNode.get_y(), childNode.state_hash()
+
+                childNode.set_cost(childNode.get_g())
+
+                if ClosedArr.get(childNode.state_hash()) is None:
+                    heapq.heappush(OpenArr, childNode)
+                    ClosedArr[child_hash] = childNode
+
+                elif childNode.get_g() < ClosedArr[child_hash].get_g():
+
+                    childNode.set_cost(childNode.get_cost)
+                    childNode.set_g(childNode.get_g())
+
+        return -1, -1
+
+
+
     for i in range(0, len(start_states)):
         start = start_states[i]
         goal = goal_states[i]
         time_start = time.time()
-        cost, expanded_diskstra = Dijkstra(start, goal)
+        cost, expanded_diskstra = Dijkstra(start, goal, gridded_map)
 
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
