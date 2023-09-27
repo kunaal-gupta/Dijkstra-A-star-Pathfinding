@@ -46,7 +46,13 @@ def main():
         solution_costs.append(float(list_instance[4]))
     file.close()
 
+    def OctileDistance(x, y, goal):
+        xDiff = x - goal.get_x()
+        yDiff = y - goal.get_y()
+        return 1.5 * min(xDiff, yDiff) + abs(abs(xDiff) - abs(yDiff))
+
     def Astar(start, goal):
+
         OpenArr = [[0, start]]
         ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, 0]}
 
@@ -58,14 +64,15 @@ def main():
 
             for childNode in gridded_map.successors(node):
                 child_g = childNode.get_g()
+                child_h = OctileDistance(childNode.get_x(), childNode.get_y(), goal)
 
                 if childNode.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [child_g, childNode])  # OpenList
-                    ClosedArr[childNode.state_hash()] = [childNode, child_g]  # ClosedList
+                    heapq.heappush(OpenArr, [child_g+child_h, childNode])  # OpenList
+                    ClosedArr[childNode.state_hash()] = [childNode, child_g+child_h]  # ClosedList
 
-                if childNode.state_hash() in ClosedArr and child_g < ClosedArr[childNode.state_hash()][1]:
-                    ClosedArr[childNode.state_hash()][1] = child_g
-                    heapq.heappush(OpenArr, [child_g, childNode])
+                if childNode.state_hash() in ClosedArr and child_g+child_h < ClosedArr[childNode.state_hash()][1]:
+                    ClosedArr[childNode.state_hash()][1] = child_g+child_h
+                    heapq.heappush(OpenArr, [child_g+child_h, childNode])
                     childNode.set_g(child_g)
 
         return -1, -1
