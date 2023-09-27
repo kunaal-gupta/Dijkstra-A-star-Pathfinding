@@ -109,15 +109,15 @@ class Map:
         if self.data_int[y][x] == 1:
             return False
         return True
-    
+
     def cost(self, x, y):
         """
         Returns the cost of an action.
-        
+
         Diagonal moves cost 1.5; each action in the 4 cardinal directions costs 1.0
         """
         if x == 0 or y == 0:
-            return 1
+            return 1.0
         else:
             return 1.5
     
@@ -134,5 +134,6 @@ class Map:
                     s = State(state.get_x() + i, state.get_y() + j)
                     s.set_g(state.get_g() + self.cost(i, j))
                     children.append(s)
+
         return children
 
