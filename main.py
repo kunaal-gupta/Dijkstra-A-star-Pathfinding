@@ -46,7 +46,29 @@ def main():
         solution_costs.append(float(list_instance[4]))
     file.close()
 
-    # print('Start ', start_states)
+    def Astar(start, goal):
+        OpenArr = [[0, start]]
+        ClosedArr = {State(start.get_x(), start.get_y()).state_hash(): [start, 0]}
+
+        while OpenArr:
+            node_g, node = heapq.heappop(OpenArr)
+
+            if node == goal:
+                return ClosedArr[goal.state_hash()][1], len(ClosedArr)
+
+            for childNode in gridded_map.successors(node):
+                child_g = childNode.get_g()
+
+                if childNode.state_hash() not in ClosedArr:
+                    heapq.heappush(OpenArr, [child_g, childNode])  # OpenList
+                    ClosedArr[childNode.state_hash()] = [childNode, child_g]  # ClosedList
+
+                if childNode.state_hash() in ClosedArr and child_g < ClosedArr[childNode.state_hash()][1]:
+                    ClosedArr[childNode.state_hash()][1] = child_g
+                    heapq.heappush(OpenArr, [child_g, childNode])
+                    childNode.set_g(child_g)
+
+        return -1, -1
 
     def Dijkstra(start, goal):
         OpenArr = [[0, start]]
@@ -73,43 +95,45 @@ def main():
         return -1, -1
 
     for i in range(0, len(start_states)):
-        start = start_states[i]
-        goal = goal_states[i]
-
-        time_start = time.time()
-        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's
-        # implementation
-        time_end = time.time()
-        nodes_expanded_dijkstra.append(expanded_diskstra)
-        time_dijkstra.append(time_end - time_start)
-
-        if cost != solution_costs[i]:
-            print("There is a mismatch in the solution cost found by Dijkstra and what was expected for the problem:")
-            print("Start state: ", start)
-            print("Goal state: ", goal)
-            print("Solution cost encountered: ", cost)
-            print("Solution cost expected: ", solution_costs[i])
-
-        else:
-            print('success')
-
-            # start = start_states[i]
+        # start = start_states[i]
         # goal = goal_states[i]
         #
         # time_start = time.time()
-        # cost, expanded_astar = None, None # replace None, None with the call to your A* implementation
+        # cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's
+        # # implementation
         # time_end = time.time()
-        #
-        # nodes_expanded_astar.append(expanded_astar)
-        # time_astar.append(time_end - time_start)
+        # nodes_expanded_dijkstra.append(expanded_diskstra)
+        # time_dijkstra.append(time_end - time_start)
         #
         # if cost != solution_costs[i]:
-        #     print("There is a mismatch in the solution cost found by A* and what was expected for the problem:")
+        #     print("There is a mismatch in the solution cost found by Dijkstra and what was expected for the problem:")
         #     print("Start state: ", start)
         #     print("Goal state: ", goal)
         #     print("Solution cost encountered: ", cost)
         #     print("Solution cost expected: ", solution_costs[i])
-        #     print()
+        #
+        # else:
+        #     print('success')
+
+        start = start_states[i]
+        goal = goal_states[i]
+
+        time_start = time.time()
+        cost, expanded_astar = Astar(start, goal) # replace None, None with the call to your A* implementation
+        time_end = time.time()
+
+        nodes_expanded_astar.append(expanded_astar)
+        time_astar.append(time_end - time_start)
+
+        if cost != solution_costs[i]:
+            print("There is a mismatch in the solution cost found by A* and what was expected for the problem:")
+            print("Start state: ", start)
+            print("Goal state: ", goal)
+            print("Solution cost encountered: ", cost)
+            print("Solution cost expected: ", solution_costs[i])
+            print()
+        else:
+            print('success')
 
     if plots:
         from search.plot_results import PlotResults
