@@ -121,8 +121,7 @@ def main():
             print("Solution cost encountered: ", cost)
             print("Solution cost expected: ", solution_costs[i])
 
-        else:
-            print('Dj Time', time_end - time_start)
+
 
         start = start_states[i]
         goal = goal_states[i]
@@ -141,8 +140,7 @@ def main():
             print("Solution cost encountered: ", cost)
             print("Solution cost expected: ", solution_costs[i])
             print()
-        else:
-            print('Astar Time', time_end - time_start)
+
 
     if plots:
         from search.plot_results import PlotResults
