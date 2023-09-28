@@ -51,18 +51,21 @@ def main():
         yDiff = abs(y - goal.get_y())
         return 1.5 * min(xDiff, yDiff) + abs(xDiff - yDiff)
 
-    def Astar(start, goal):
+    def Astar(start, goal, transitionFunc):
 
         OpenArr = [[0, start]]
         ClosedArr = {start.state_hash(): [start, 0]}
 
+        nodesExpandedCount = 0
         while OpenArr:
+            nodesExpandedCount +=1
             node_g, node = heapq.heappop(OpenArr)
 
             if node == goal:
-                return ClosedArr[goal.state_hash()][1], len(ClosedArr)
+                return ClosedArr[goal.state_hash()][1], nodesExpandedCount
 
-            for childNode in gridded_map.successors(node):
+
+            for childNode in transitionFunc.successors(node):
                 child_g = childNode.get_g()
                 child_h = OctileDistance(childNode.get_x(), childNode.get_y(), goal)
 
@@ -76,17 +79,18 @@ def main():
 
         return -1, -1
 
-    def Dijkstra(start, goal):
+    def Dijkstra(start, goal, transitionFunc):
         OpenArr = [[0, start]]
         ClosedArr = {start.state_hash(): [start, 0]}
-
+        nodesExpandedCount = 0
         while OpenArr:
+            nodesExpandedCount +=1
             node_g, node = heapq.heappop(OpenArr)
 
             if node == goal:
-                return ClosedArr[goal.state_hash()][1], len(ClosedArr)
+                return ClosedArr[goal.state_hash()][1], nodesExpandedCount
 
-            for childNode in gridded_map.successors(node):
+            for childNode in transitionFunc.successors(node):
                 child_g = childNode.get_g()
 
                 if childNode.state_hash() not in ClosedArr:
@@ -104,7 +108,7 @@ def main():
         goal = goal_states[i]
 
         time_start = time.time()
-        cost, expanded_diskstra = Dijkstra(start, goal)  # replace None, None with the call to your Dijkstra's
+        cost, expanded_diskstra = Dijkstra(start, goal, gridded_map)  # replace None, None with the call to your Dijkstra's
         # implementation
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
@@ -124,7 +128,7 @@ def main():
         goal = goal_states[i]
 
         time_start = time.time()
-        cost, expanded_astar = Astar(start, goal)  # replace None, None with the call to your A* implementation
+        cost, expanded_astar = Astar(start, goal, gridded_map)  # replace None, None with the call to your A* implementation
         time_end = time.time()
 
         nodes_expanded_astar.append(expanded_astar)
