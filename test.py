@@ -53,7 +53,7 @@ def main():
 
     def Astar(start, goal):
 
-        OpenArr = [[0, start]]
+        OpenArr = [(0, start)]
         ClosedArr = {start.state_hash(): [start, 0]}
 
         while OpenArr:
@@ -67,17 +67,17 @@ def main():
                 child_h = OctileDistance(childNode.get_x(), childNode.get_y(), goal)
 
                 if childNode.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [child_g + child_h, childNode])  # OpenList
+                    heapq.heappush(OpenArr, (child_g + child_h, childNode))  # OpenList
                     ClosedArr[childNode.state_hash()] = [childNode, child_g + child_h]  # ClosedList
 
                 elif child_g + child_h < ClosedArr[childNode.state_hash()][1]:
                     ClosedArr[childNode.state_hash()][1] = child_g + child_h
-                    heapq.heappush(OpenArr, [child_g + child_h, childNode])
+                    heapq.heappush(OpenArr, (child_g + child_h, childNode))
 
         return -1, -1
 
     def Dijkstra(start, goal):
-        OpenArr = [[0, start]]
+        OpenArr = [(0, start)]
         ClosedArr = {start.state_hash(): [start, 0]}
 
         while OpenArr:
@@ -90,12 +90,12 @@ def main():
                 child_g = childNode.get_g()
 
                 if childNode.state_hash() not in ClosedArr:
-                    heapq.heappush(OpenArr, [child_g, childNode])  # OpenList
+                    heapq.heappush(OpenArr, (child_g, childNode))  # OpenList
                     ClosedArr[childNode.state_hash()] = [childNode, child_g]  # ClosedList
 
                 elif child_g < ClosedArr[childNode.state_hash()][1]:
                     ClosedArr[childNode.state_hash()][1] = child_g
-                    heapq.heappush(OpenArr, [child_g, childNode])
+                    heapq.heappush(OpenArr, (child_g, childNode))
 
         return -1, -1
 
