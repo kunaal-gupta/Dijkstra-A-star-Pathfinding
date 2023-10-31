@@ -14,6 +14,9 @@ Most of the code you need is already implemented in the assignment package. In t
 some of the key functions you will use from the starter code. You can reimplement all these functions if you
 prefer, their use isn’t mandatory. The assignment must be implemented in Python, however.
 
+![1695912395935](https://github.com/kunaal-gupta/Dijkstra-A-star-Pathfinding/assets/87749508/893ff006-4319-43b2-84a0-7a70f66d6f2c)
+![1695912411225](https://github.com/kunaal-gupta/Dijkstra-A-star-Pathfinding/assets/87749508/b0964908-0f53-4faa-a6b1-202f78bd0681)
+
 ## Part 1: Djiktra's Path Finding
 
 Implement Dijkstra’s algorithm and call your implementation in the line marked with the comment “replace
@@ -52,8 +55,7 @@ implement the re-expansion of nodes we discussed in class.
 You can implement the algorithm as a function or as a class, whichever is more convenient for you. Your
 implementation can be in a new file, in main.py, or in any other file you prefer. Similarly to the A*
 implementation, you can implement the Octile distance anywhere you prefer in the code.
-![running_time](https://github.com/kunaal-gupta/Dijkstra-A-star-Pathfinding/assets/87749508/8c58cada-6f21-46a8-b251-69b6fe4bc7ee)
-![nodes_expanded](https://github.com/kunaal-gupta/Dijkstra-A-star-Pathfinding/assets/87749508/86139764-8942-411b-b864-af9ee10049ae)
+
 
 ## How to Run Starter Code
 Follow the steps below to run the starter code (instructions are for Mac and Linux). 
